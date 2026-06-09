@@ -1,0 +1,9 @@
+{
+  "name": "Seqgen",
+  "short_name": "Seqgen",
+  "description": "Cryptographic data generators",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070910",
+  "theme_color": "#9b5cff"
+}

@@ -1,0 +1,14 @@
+.git
+.github
+.react-router
+.vite
+build
+node_modules
+*.log
+.env
+.env.*
+!.env.example
+Dockerfile*
+README.md
+API_DOCS.md
+LICENSE
