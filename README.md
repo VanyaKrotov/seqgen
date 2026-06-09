@@ -61,9 +61,30 @@ Workflow должен уже находиться в основной ветке
 и `latest`. Дополнительные secrets для workflow не требуются: публикация
 выполняется с помощью встроенного `GITHUB_TOKEN`.
 
+Для каждого Git-тега также создаётся GitHub Release с автоматически
+сформированным описанием. К релизу прикладываются:
+
+- `seqgen-<tag>-linux-amd64.tar.gz`;
+- `seqgen-<tag>-linux-arm64.tar.gz`;
+- `seqgen-<tag>-SHA256SUMS.txt`.
+
+Архив из релиза можно проверить и импортировать без обращения к GHCR:
+
+```bash
+sha256sum --check seqgen-v1.0.0-SHA256SUMS.txt
+gzip --decompress seqgen-v1.0.0-linux-amd64.tar.gz
+docker load --input seqgen-v1.0.0-linux-amd64.tar
+docker run --rm -p 3000:3000 seqgen:v1.0.0
+```
+
+Для ARM64-сервера используйте архив с суффиксом `linux-arm64`.
+
 Workflow также можно запустить вручную на странице **Actions → Build and
 publish Docker image → Run workflow**. В поле `Image tag to publish` укажите
 нужный тег образа, например `v1.0.0`.
+
+Ручной запуск публикует образ в GHCR, но не создаёт GitHub Release, поскольку
+релиз должен быть связан с существующим Git-тегом.
 
 Если GHCR-пакет должен скачиваться без авторизации, установите для него
 видимость `Public` в настройках пакета на GitHub.

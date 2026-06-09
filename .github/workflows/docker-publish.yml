@@ -12,7 +12,7 @@ on:
       - "*"
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 env:
@@ -69,3 +69,71 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: mode=max
           sbom: true
+
+      - name: Prepare release asset names
+        if: github.event_name == 'push'
+        id: release-assets
+        shell: bash
+        run: |
+          safe_tag="${GITHUB_REF_NAME//\//-}"
+          echo "docker_tag=${safe_tag}" >> "$GITHUB_OUTPUT"
+          echo "amd64=${RUNNER_TEMP}/seqgen-${safe_tag}-linux-amd64.tar" >> "$GITHUB_OUTPUT"
+          echo "arm64=${RUNNER_TEMP}/seqgen-${safe_tag}-linux-arm64.tar" >> "$GITHUB_OUTPUT"
+          echo "checksum=${RUNNER_TEMP}/seqgen-${safe_tag}-SHA256SUMS.txt" >> "$GITHUB_OUTPUT"
+
+      - name: Export linux/amd64 release image
+        if: github.event_name == 'push'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64
+          tags: seqgen:${{ steps.release-assets.outputs.docker_tag }}
+          outputs: type=docker,dest=${{ steps.release-assets.outputs.amd64 }}
+          cache-from: type=gha
+
+      - name: Export linux/arm64 release image
+        if: github.event_name == 'push'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/arm64
+          tags: seqgen:${{ steps.release-assets.outputs.docker_tag }}
+          outputs: type=docker,dest=${{ steps.release-assets.outputs.arm64 }}
+          cache-from: type=gha
+
+      - name: Compress release images and create checksums
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          gzip --best "${{ steps.release-assets.outputs.amd64 }}"
+          gzip --best "${{ steps.release-assets.outputs.arm64 }}"
+          cd "${RUNNER_TEMP}"
+          sha256sum \
+            "$(basename "${{ steps.release-assets.outputs.amd64 }}").gz" \
+            "$(basename "${{ steps.release-assets.outputs.arm64 }}").gz" \
+            > "${{ steps.release-assets.outputs.checksum }}"
+
+      - name: Create GitHub release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AMD64_ARCHIVE: ${{ steps.release-assets.outputs.amd64 }}.gz
+          ARM64_ARCHIVE: ${{ steps.release-assets.outputs.arm64 }}.gz
+          CHECKSUM_FILE: ${{ steps.release-assets.outputs.checksum }}
+        shell: bash
+        run: |
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            gh release upload "${GITHUB_REF_NAME}" \
+              "${AMD64_ARCHIVE}" \
+              "${ARM64_ARCHIVE}" \
+              "${CHECKSUM_FILE}" \
+              --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" \
+              "${AMD64_ARCHIVE}" \
+              "${ARM64_ARCHIVE}" \
+              "${CHECKSUM_FILE}" \
+              --verify-tag \
+              --generate-notes \
+              --notes "Docker image: \`ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}\`"
+          fi
