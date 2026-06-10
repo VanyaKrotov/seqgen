@@ -3,8 +3,10 @@ import {
   ArrowUpRight,
   Binary,
   Braces,
+  FileCode2,
   Fingerprint,
   KeyRound,
+  Link as LinkIcon,
   ScanLine,
   ShieldCheck,
   Sparkles,
@@ -16,6 +18,10 @@ import {
   generators,
   getGenerator,
 } from "~/entities/generator/config/generators";
+import {
+  getUtility,
+  utilities,
+} from "~/entities/utility/config/utilities";
 import { LanguageSelect } from "~/features/change-language/ui/language-select";
 
 const icons = {
@@ -26,6 +32,8 @@ const icons = {
   ScanLine,
   ShieldCheck,
   WholeWord,
+  FileCode2,
+  Link: LinkIcon,
 };
 
 function getActiveGeneratorType(pathname: string) {
@@ -38,10 +46,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const location = useLocation();
   const activeType = getActiveGeneratorType(location.pathname);
-  const active = getGenerator(activeType ?? undefined);
+  const activeUtilityType = location.pathname.startsWith("/utility/")
+    ? location.pathname.split("/")[2]
+    : null;
+  const activeUtility = getUtility(activeUtilityType ?? undefined);
+  const active = activeUtility ?? getGenerator(activeType ?? undefined);
   const otherGenerators = generators.filter(
     (generator) => generator.type !== activeType,
   );
+  const otherUtilities = utilities.filter(
+    (utility) => utility.type !== activeUtilityType,
+  );
+  const showToolNavigation = Boolean(activeType || activeUtility);
 
   return (
     <div
@@ -107,7 +123,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </motion.div>
         </AnimatePresence>
 
-        {activeType ? (
+        {showToolNavigation ? (
           <section className="pb-[clamp(64px,9vw,112px)] pt-[clamp(64px,8vw,104px)]">
             <div className="mb-6 flex items-end justify-between gap-6 max-[620px]:block">
               <div>
@@ -159,6 +175,56 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 );
               })}
             </nav>
+            <div className="mb-6 mt-[clamp(48px,6vw,72px)] flex items-end justify-between gap-6 max-[620px]:block">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[.13em] text-[var(--accent)]">
+                  seqgen
+                </span>
+                <h2 className="mb-0 mt-2 text-[clamp(25px,3vw,38px)] tracking-[-.04em]">
+                  {t("navigation.utilitiesTitle")}
+                </h2>
+              </div>
+              <p className="m-0 max-w-[520px] text-sm leading-6 text-[var(--muted)] max-[620px]:mt-3">
+                {t("navigation.utilitiesDescription")}
+              </p>
+            </div>
+            <nav className="grid grid-cols-2 gap-4 max-[620px]:grid-cols-1">
+              {otherUtilities.map((item) => {
+                const Icon = icons[item.icon];
+
+                return (
+                  <motion.div
+                    key={item.type}
+                    whileHover={{ y: -4 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Link
+                      to={item.path}
+                      className="group flex h-full min-h-[156px] flex-col rounded-[20px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_14px_45px_rgba(0,0,0,.06)] backdrop-blur-[18px] transition-[border-color,box-shadow] hover:border-[var(--item-color)] hover:shadow-[0_18px_55px_color-mix(in_srgb,var(--item-color)_12%,transparent)]"
+                      style={
+                        { "--item-color": item.color } as React.CSSProperties
+                      }
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="grid size-10 place-items-center rounded-xl bg-[color-mix(in_srgb,var(--item-color)_13%,transparent)] text-[var(--item-color)]">
+                          <Icon size={20} />
+                        </span>
+                        <ArrowUpRight
+                          className="text-[var(--muted)] transition-[color,transform] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--item-color)]"
+                          size={18}
+                        />
+                      </div>
+                      <h3 className="mb-1.5 mt-5 text-base tracking-[-.02em]">
+                        {t(`utilities.${item.translationKey}.name`)}
+                      </h3>
+                      <p className="m-0 text-[13px] leading-[1.55] text-[var(--muted)]">
+                        {t(`utilities.${item.translationKey}.description`)}
+                      </p>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </nav>
           </section>
         ) : (
           <div className="h-[clamp(64px,8vw,104px)]" />
@@ -198,6 +264,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link className="hover:text-[var(--text)]" to="/">
                   {t("generators.password.name")}
                 </Link>
+                {utilities.map((item) => (
+                  <Link
+                    className="hover:text-[var(--text)]"
+                    key={item.type}
+                    to={item.path}
+                  >
+                    {t(`utilities.${item.translationKey}.name`)}
+                  </Link>
+                ))}
               </div>
             </div>
             <div>

@@ -2,7 +2,7 @@ const en = {
   translation: {
     brandTagline: "Cryptographic data generators",
     nav: { generators: "Generators", terms: "Terms", privacy: "Privacy", apiDocs: "API documentation" },
-    navigation: { title: "Other generators", description: "Choose another cryptographic tool." },
+    navigation: { title: "Other generators", description: "Choose another cryptographic tool.", utilitiesTitle: "Text utilities", utilitiesDescription: "Encode and decode text directly in your browser." },
     actions: { generate: "Generate", generating: "Generating…", copy: "Copy", copied: "Copied", add: "Add", increase: "Increase", decrease: "Decrease", show: "Show", hide: "Hide", delete: "Delete", clearHistory: "Clear history" },
     common: {
       quantity: "Quantity", length: "Length", format: "Format", exclusions: "Exclusions",
@@ -23,6 +23,14 @@ const en = {
       phrase: { name: "Phrase", title: "Random phrase generator", description: "Memorable word sequences for seeds, recovery codes and passphrases." },
       seq: { name: "Bytes", title: "Random byte sequence", description: "Cryptographically secure bytes encoded as hex, Base64 or Base64URL." },
       shortId: { name: "Xray short ID", title: "Xray short ID generator", description: "Valid hexadecimal short IDs for Xray REALITY configurations." },
+    },
+    utilities: {
+      label: "Text conversion",
+      actions: { encode: "Encode", decode: "Decode", swap: "Swap values and direction" },
+      sourcePlaceholder: "Enter source text…",
+      resultPlaceholder: "The converted value will appear here…",
+      base64: { name: "Base64", title: "Base64 encoder and decoder", description: "Convert UTF-8 text to Base64 and decode Base64 back to readable text.", metaDescription: "Free online Base64 encoder and decoder with correct UTF-8 support.", plainLabel: "Text", encodedLabel: "Base64", error: "Enter a valid Base64 string containing UTF-8 text." },
+      url: { name: "URL encoding", title: "URL encoder and decoder", description: "Encode text for safe use in URL components or decode an encoded URL string.", metaDescription: "Free online URL encoder and decoder for URL components and query values.", plainLabel: "Text", encodedLabel: "Encoded URL string", error: "Enter a valid percent-encoded URL string." },
     },
     legal: {
       termsTitle: "Terms of use", privacyTitle: "Privacy policy", updated: "Updated {{date}}",
@@ -56,7 +64,7 @@ type Dictionary = typeof en;
 const ru: Dictionary = { translation: {
   brandTagline: "Генераторы криптографических данных",
   nav: { generators: "Генераторы", terms: "Условия", privacy: "Конфиденциальность", apiDocs: "Документация API" },
-  navigation: { title: "Другие генераторы", description: "Выберите другой криптографический инструмент." },
+  navigation: { title: "Другие генераторы", description: "Выберите другой криптографический инструмент.", utilitiesTitle: "Утилиты для текста", utilitiesDescription: "Кодируйте и декодируйте текст прямо в браузере." },
   actions: { generate: "Сгенерировать", generating: "Генерация…", copy: "Копировать", copied: "Скопировано", add: "Добавить", increase: "Увеличить", decrease: "Уменьшить", show: "Показать", hide: "Скрыть", delete: "Удалить", clearHistory: "Очистить историю" },
   common: { quantity: "Количество", length: "Длина", format: "Формат", exclusions: "Исключения", exclusionsHint: "Значения через запятую", secure: "Безопасная генерация", result: "Результат", noResult: "Настройте параметры и сгенерируйте значение." },
   fields: { uppercase: "Заглавные", lowercase: "Строчные", numbers: "Цифры", symbols: "Символы", min: "От", max: "До", type: "Протокол", words: "Слова", separator: "Разделитель", byteLength: "Длина в байтах", encoding: "Кодировка", version: "Версия" },
@@ -69,6 +77,14 @@ const ru: Dictionary = { translation: {
     phrase: { name: "Фраза", title: "Генератор случайных фраз", description: "Запоминаемые наборы слов для seed-фраз, кодов восстановления и паролей." },
     seq: { name: "Байты", title: "Генератор случайных байт", description: "Криптографически стойкие байты в hex, Base64 или Base64URL." },
     shortId: { name: "Xray short ID", title: "Генератор Xray short ID", description: "Корректные шестнадцатеричные short ID для конфигураций Xray REALITY." },
+  },
+  utilities: {
+    label: "Преобразование текста",
+    actions: { encode: "Закодировать", decode: "Декодировать", swap: "Поменять значения и направление" },
+    sourcePlaceholder: "Введите исходный текст…",
+    resultPlaceholder: "Здесь появится преобразованное значение…",
+    base64: { name: "Base64", title: "Кодирование и декодирование Base64", description: "Преобразуйте UTF-8 текст в Base64 и декодируйте Base64 обратно в читаемый текст.", metaDescription: "Бесплатный онлайн-инструмент кодирования и декодирования Base64 с поддержкой UTF-8.", plainLabel: "Текст", encodedLabel: "Base64", error: "Введите корректную строку Base64, содержащую текст UTF-8." },
+    url: { name: "URL-кодирование", title: "Кодирование и декодирование URL", description: "Кодируйте текст для безопасного использования в компонентах URL или декодируйте URL-строку.", metaDescription: "Бесплатный онлайн-инструмент кодирования и декодирования компонентов URL.", plainLabel: "Текст", encodedLabel: "Закодированная URL-строка", error: "Введите корректную URL-строку с процентным кодированием." },
   },
   legal: { termsTitle: "Условия использования", privacyTitle: "Политика конфиденциальности", updated: "Обновлено {{date}}", termsMetaDescription: "Условия использования сервиса криптографических генераторов Seqgen.", privacyMetaDescription: "Политика конфиденциальности сервиса криптографических генераторов Seqgen.", terms: "Seqgen предоставляется «как есть» для генерации случайных технических данных. Вы отвечаете за проверку значений и безопасное хранение секретов. Сервис не гарантирует отсутствие потерь из-за неверного использования, недоступности или скомпрометированного устройства.", privacy: "Seqgen не требует аккаунта и намеренно не сохраняет сгенерированные значения. Запрос обрабатывается только для возврата ответа. Стандартные серверные логи могут содержать технические метаданные, например время, маршрут и IP-адрес, но не должны включать результат генерации." },
   apiDocs: {
@@ -93,7 +109,7 @@ const ru: Dictionary = { translation: {
 const de: Dictionary = { translation: {
   brandTagline: "Generatoren für kryptografische Daten",
   nav: { generators: "Generatoren", terms: "Nutzungsbedingungen", privacy: "Datenschutz", apiDocs: "API-Dokumentation" },
-  navigation: { title: "Weitere Generatoren", description: "Wählen Sie ein anderes kryptografisches Werkzeug." },
+  navigation: { title: "Weitere Generatoren", description: "Wählen Sie ein anderes kryptografisches Werkzeug.", utilitiesTitle: "Textwerkzeuge", utilitiesDescription: "Kodieren und dekodieren Sie Text direkt im Browser." },
   actions: { generate: "Generieren", generating: "Wird generiert…", copy: "Kopieren", copied: "Kopiert", add: "Hinzufügen", increase: "Erhöhen", decrease: "Verringern", show: "Anzeigen", hide: "Ausblenden", delete: "Löschen", clearHistory: "Verlauf löschen" },
   common: { quantity: "Anzahl", length: "Länge", format: "Format", exclusions: "Ausschlüsse", exclusionsHint: "Kommagetrennte Werte", secure: "Sichere Generierung", result: "Ergebnis", noResult: "Optionen festlegen und einen Wert generieren." },
   fields: { uppercase: "Großbuchstaben", lowercase: "Kleinbuchstaben", numbers: "Zahlen", symbols: "Sonderzeichen", min: "Von", max: "Bis", type: "Protokoll", words: "Wörter", separator: "Trennzeichen", byteLength: "Byte-Länge", encoding: "Kodierung", version: "Version" },
@@ -106,6 +122,14 @@ const de: Dictionary = { translation: {
     phrase: { name: "Phrase", title: "Zufallsphrasengenerator", description: "Merkbare Wortfolgen für Seeds, Wiederherstellungscodes und Passphrasen." },
     seq: { name: "Bytes", title: "Zufällige Bytefolge", description: "Kryptografisch sichere Bytes als Hex, Base64 oder Base64URL." },
     shortId: { name: "Xray Short ID", title: "Xray Short-ID-Generator", description: "Gültige hexadezimale Short IDs für Xray-REALITY-Konfigurationen." },
+  },
+  utilities: {
+    label: "Textkonvertierung",
+    actions: { encode: "Kodieren", decode: "Dekodieren", swap: "Werte und Richtung tauschen" },
+    sourcePlaceholder: "Ausgangstext eingeben…",
+    resultPlaceholder: "Der konvertierte Wert erscheint hier…",
+    base64: { name: "Base64", title: "Base64-Kodierer und -Dekodierer", description: "Konvertieren Sie UTF-8-Text in Base64 und Base64 zurück in lesbaren Text.", metaDescription: "Kostenloser Base64-Kodierer und -Dekodierer mit korrekter UTF-8-Unterstützung.", plainLabel: "Text", encodedLabel: "Base64", error: "Geben Sie eine gültige Base64-Zeichenfolge mit UTF-8-Text ein." },
+    url: { name: "URL-Kodierung", title: "URL-Kodierer und -Dekodierer", description: "Kodieren Sie Text für URL-Komponenten oder dekodieren Sie eine kodierte URL-Zeichenfolge.", metaDescription: "Kostenloser URL-Kodierer und -Dekodierer für URL-Komponenten und Abfragewerte.", plainLabel: "Text", encodedLabel: "Kodierte URL-Zeichenfolge", error: "Geben Sie eine gültige prozentkodierte URL-Zeichenfolge ein." },
   },
   legal: { termsTitle: "Nutzungsbedingungen", privacyTitle: "Datenschutzerklärung", updated: "Aktualisiert am {{date}}", termsMetaDescription: "Nutzungsbedingungen für den kryptografischen Generator-Dienst Seqgen.", privacyMetaDescription: "Datenschutzerklärung für den kryptografischen Generator-Dienst Seqgen.", terms: "Seqgen wird ohne Gewähr zur Erzeugung zufälliger technischer Daten bereitgestellt. Sie sind für die Prüfung der Werte und die sichere Speicherung von Geheimnissen verantwortlich. Es besteht keine Haftung für Schäden durch Fehlbedienung, Nichtverfügbarkeit oder kompromittierte Endgeräte.", privacy: "Seqgen erfordert kein Konto und speichert generierte Werte nicht absichtlich. Anfragen werden nur zur Rückgabe einer Antwort verarbeitet. Standardmäßige Serverprotokolle können technische Metadaten wie Zeit, Route und IP-Adresse enthalten, jedoch keine generierten Ergebnisse." },
   apiDocs: {
@@ -130,7 +154,7 @@ const de: Dictionary = { translation: {
 const fr: Dictionary = { translation: {
   brandTagline: "Générateurs de données cryptographiques",
   nav: { generators: "Générateurs", terms: "Conditions", privacy: "Confidentialité", apiDocs: "Documentation API" },
-  navigation: { title: "Autres générateurs", description: "Choisissez un autre outil cryptographique." },
+  navigation: { title: "Autres générateurs", description: "Choisissez un autre outil cryptographique.", utilitiesTitle: "Utilitaires de texte", utilitiesDescription: "Encodez et décodez du texte directement dans le navigateur." },
   actions: { generate: "Générer", generating: "Génération…", copy: "Copier", copied: "Copié", add: "Ajouter", increase: "Augmenter", decrease: "Diminuer", show: "Afficher", hide: "Masquer", delete: "Supprimer", clearHistory: "Effacer l’historique" },
   common: { quantity: "Quantité", length: "Longueur", format: "Format", exclusions: "Exclusions", exclusionsHint: "Valeurs séparées par des virgules", secure: "Génération sécurisée", result: "Résultat", noResult: "Configurez les options puis générez une valeur." },
   fields: { uppercase: "Majuscules", lowercase: "Minuscules", numbers: "Chiffres", symbols: "Symboles", min: "De", max: "À", type: "Protocole", words: "Mots", separator: "Séparateur", byteLength: "Longueur en octets", encoding: "Encodage", version: "Version" },
@@ -143,6 +167,14 @@ const fr: Dictionary = { translation: {
     phrase: { name: "Phrase", title: "Générateur de phrases aléatoires", description: "Suites de mots mémorisables pour seeds, codes de récupération et phrases secrètes." },
     seq: { name: "Octets", title: "Séquence d'octets aléatoires", description: "Octets cryptographiquement sûrs encodés en hex, Base64 ou Base64URL." },
     shortId: { name: "Short ID Xray", title: "Générateur de Short ID Xray", description: "Short IDs hexadécimaux valides pour les configurations Xray REALITY." },
+  },
+  utilities: {
+    label: "Conversion de texte",
+    actions: { encode: "Encoder", decode: "Décoder", swap: "Permuter les valeurs et le sens" },
+    sourcePlaceholder: "Saisissez le texte source…",
+    resultPlaceholder: "La valeur convertie apparaîtra ici…",
+    base64: { name: "Base64", title: "Encodeur et décodeur Base64", description: "Convertissez du texte UTF-8 en Base64 et décodez Base64 en texte lisible.", metaDescription: "Encodeur et décodeur Base64 gratuit avec prise en charge correcte de l’UTF-8.", plainLabel: "Texte", encodedLabel: "Base64", error: "Saisissez une chaîne Base64 valide contenant du texte UTF-8." },
+    url: { name: "Encodage URL", title: "Encodeur et décodeur URL", description: "Encodez du texte pour les composants d’URL ou décodez une chaîne URL encodée.", metaDescription: "Encodeur et décodeur URL gratuit pour les composants d’URL et les paramètres.", plainLabel: "Texte", encodedLabel: "Chaîne URL encodée", error: "Saisissez une chaîne URL valide avec encodage en pourcentage." },
   },
   legal: { termsTitle: "Conditions d'utilisation", privacyTitle: "Politique de confidentialité", updated: "Mis à jour le {{date}}", termsMetaDescription: "Conditions d'utilisation du service de générateurs cryptographiques Seqgen.", privacyMetaDescription: "Politique de confidentialité du service de générateurs cryptographiques Seqgen.", terms: "Seqgen est fourni en l'état pour générer des données techniques aléatoires. Vous devez valider les valeurs et conserver les secrets en sécurité. Le service ne garantit pas les pertes dues à une mauvaise utilisation, une indisponibilité ou un appareil compromis.", privacy: "Seqgen ne requiert aucun compte et ne conserve pas volontairement les valeurs générées. Les requêtes sont traitées uniquement afin de renvoyer une réponse. Les journaux serveur standards peuvent contenir des métadonnées techniques comme l'heure, la route et l'adresse IP, mais pas les résultats générés." },
   apiDocs: {
@@ -167,7 +199,7 @@ const fr: Dictionary = { translation: {
 const es: Dictionary = { translation: {
   brandTagline: "Generadores de datos criptográficos",
   nav: { generators: "Generadores", terms: "Términos", privacy: "Privacidad", apiDocs: "Documentación API" },
-  navigation: { title: "Otros generadores", description: "Elige otra herramienta criptográfica." },
+  navigation: { title: "Otros generadores", description: "Elige otra herramienta criptográfica.", utilitiesTitle: "Utilidades de texto", utilitiesDescription: "Codifica y decodifica texto directamente en el navegador." },
   actions: { generate: "Generar", generating: "Generando…", copy: "Copiar", copied: "Copiado", add: "Añadir", increase: "Aumentar", decrease: "Disminuir", show: "Mostrar", hide: "Ocultar", delete: "Eliminar", clearHistory: "Borrar historial" },
   common: { quantity: "Cantidad", length: "Longitud", format: "Formato", exclusions: "Exclusiones", exclusionsHint: "Valores separados por comas", secure: "Generación segura", result: "Resultado", noResult: "Configura las opciones y genera un valor." },
   fields: { uppercase: "Mayúsculas", lowercase: "Minúsculas", numbers: "Números", symbols: "Símbolos", min: "Desde", max: "Hasta", type: "Protocolo", words: "Palabras", separator: "Separador", byteLength: "Longitud en bytes", encoding: "Codificación", version: "Versión" },
@@ -180,6 +212,14 @@ const es: Dictionary = { translation: {
     phrase: { name: "Frase", title: "Generador de frases aleatorias", description: "Secuencias de palabras memorables para seeds, códigos de recuperación y frases de acceso." },
     seq: { name: "Bytes", title: "Secuencia aleatoria de bytes", description: "Bytes criptográficamente seguros codificados como hex, Base64 o Base64URL." },
     shortId: { name: "Short ID de Xray", title: "Generador de Short ID de Xray", description: "Short IDs hexadecimales válidos para configuraciones Xray REALITY." },
+  },
+  utilities: {
+    label: "Conversión de texto",
+    actions: { encode: "Codificar", decode: "Decodificar", swap: "Intercambiar valores y dirección" },
+    sourcePlaceholder: "Introduce el texto de origen…",
+    resultPlaceholder: "El valor convertido aparecerá aquí…",
+    base64: { name: "Base64", title: "Codificador y decodificador Base64", description: "Convierte texto UTF-8 a Base64 y decodifica Base64 de nuevo a texto legible.", metaDescription: "Codificador y decodificador Base64 gratuito con compatibilidad correcta con UTF-8.", plainLabel: "Texto", encodedLabel: "Base64", error: "Introduce una cadena Base64 válida que contenga texto UTF-8." },
+    url: { name: "Codificación URL", title: "Codificador y decodificador URL", description: "Codifica texto para componentes URL o decodifica una cadena URL codificada.", metaDescription: "Codificador y decodificador URL gratuito para componentes URL y parámetros.", plainLabel: "Texto", encodedLabel: "Cadena URL codificada", error: "Introduce una cadena URL válida con codificación porcentual." },
   },
   legal: { termsTitle: "Términos de uso", privacyTitle: "Política de privacidad", updated: "Actualizado el {{date}}", termsMetaDescription: "Términos de uso del servicio de generadores criptográficos Seqgen.", privacyMetaDescription: "Política de privacidad del servicio de generadores criptográficos Seqgen.", terms: "Seqgen se proporciona tal cual para generar datos técnicos aleatorios. Eres responsable de validar los valores y almacenar los secretos de forma segura. El servicio no garantiza pérdidas causadas por uso indebido, falta de disponibilidad o dispositivos comprometidos.", privacy: "Seqgen no requiere cuentas ni conserva intencionadamente los valores generados. Las solicitudes se procesan únicamente para devolver una respuesta. Los registros estándar del servidor pueden contener metadatos técnicos como hora, ruta y dirección IP, pero no los resultados generados." },
   apiDocs: {

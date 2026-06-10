@@ -110,6 +110,12 @@ curl -fsSL \
 sudo bash /tmp/seqgen-deploy.sh
 ```
 
+Или
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/VanyaKrotov/seqgen/main/scripts/deploy.sh)
+```
+
 Скрипт не принимает аргументы. Он всегда использует образ
 `ghcr.io/vanyakrotov/seqgen:latest` и имя контейнера `seqgen`. Во время запуска
 скрипт запросит адрес привязки и внешний порт:

@@ -21,8 +21,8 @@ export function LanguageSelect() {
     "en") as SupportedLanguage;
 
   return (
-    <div className="flex items-center gap-2 rounded-[13px] border border-[color-mix(in_srgb,var(--surface-strong)_70%,transparent)] bg-[color-mix(in_srgb,var(--surface-strong)_42%,transparent)] px-[11px] py-2 text-[var(--muted)] shadow-[0_1px_0_rgba(255,255,255,.28)_inset,0_5px_14px_rgba(0,0,0,.06)] backdrop-blur-xl transition-[border-color,background-color,box-shadow] hover:border-[color-mix(in_srgb,var(--accent)_34%,var(--border))] hover:bg-[color-mix(in_srgb,var(--surface-strong)_62%,transparent)] dark:border-white/10 dark:bg-white/[.045] dark:shadow-[0_1px_0_rgba(255,255,255,.08)_inset,0_6px_18px_rgba(0,0,0,.16)] max-[540px]:px-2 max-[540px]:py-[7px] max-[540px]:[&_svg]:hidden">
-      <Languages className="size-4" />
+    <div className="flex items-center gap-2 rounded-[13px] border border-[color-mix(in_srgb,var(--surface-strong)_70%,transparent)] bg-[color-mix(in_srgb,var(--surface-strong)_42%,transparent)] px-[11px] py-2 text-[var(--muted)] shadow-[0_1px_0_rgba(255,255,255,.28)_inset,0_5px_14px_rgba(0,0,0,.06)] backdrop-blur-xl transition-[border-color,background-color,box-shadow] hover:border-[color-mix(in_srgb,var(--accent)_34%,var(--border))] hover:bg-[color-mix(in_srgb,var(--surface-strong)_62%,transparent)] dark:border-white/10 dark:bg-white/[.045] dark:shadow-[0_1px_0_rgba(255,255,255,.08)_inset,0_6px_18px_rgba(0,0,0,.16)] max-[540px]:px-2 max-[540px]:py-[7px]">
+      <Languages className="size-4 max-[540px]:hidden" />
       <Select
         value={current}
         onValueChange={(value) => {
