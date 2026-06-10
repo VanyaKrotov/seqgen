@@ -98,7 +98,7 @@ publish Docker image → Run workflow**. В поле `Image tag to publish` ук
 Первое развёртывание из клонированного репозитория:
 
 ```bash
-sudo bash scripts/deploy.sh v1.0.0
+sudo bash scripts/deploy.sh
 ```
 
 Либо без клонирования репозитория:
@@ -107,63 +107,40 @@ sudo bash scripts/deploy.sh v1.0.0
 curl -fsSL \
   https://raw.githubusercontent.com/VanyaKrotov/seqgen/main/scripts/deploy.sh \
   -o /tmp/seqgen-deploy.sh
-sudo bash /tmp/seqgen-deploy.sh v1.0.0
+sudo bash /tmp/seqgen-deploy.sh
 ```
 
-Первый аргумент задаёт тег образа. Второй необязательный аргумент задаёт
-внешний порт:
+Скрипт не принимает аргументы. Он всегда использует образ
+`ghcr.io/vanyakrotov/seqgen:latest` и имя контейнера `seqgen`. Во время запуска
+скрипт запросит адрес привязки и внешний порт:
 
-```bash
-sudo bash scripts/deploy.sh v1.0.0 8080
+```text
+Bind address [0.0.0.0]:
+External port [3000]:
 ```
 
-В этом примере Seqgen будет доступен на `http://SERVER_IP:8080`.
+Нажмите Enter, чтобы использовать значение по умолчанию. Адрес `0.0.0.0`
+открывает порт на всех сетевых интерфейсах. Для reverse proxy обычно следует
+указать `127.0.0.1`.
 
 ### Обновление контейнера
 
-Для обновления вызовите тот же скрипт с новым тегом:
-
-```bash
-sudo bash scripts/deploy.sh v1.1.0
-```
-
-Скрипт сначала скачает новый образ, затем заменит существующий контейнер
-`seqgen` и дождётся успешного health check.
-
-Для обновления до образа с тегом `latest` аргумент можно не передавать:
+Для обновления вызовите тот же скрипт повторно:
 
 ```bash
 sudo bash scripts/deploy.sh
 ```
 
-### Переменные окружения
-
-Поведение скрипта можно изменить переменными:
-
-| Переменная | Значение по умолчанию | Назначение |
-| --- | --- | --- |
-| `SEQGEN_IMAGE` | `ghcr.io/vanyakrotov/seqgen` | Адрес Docker-образа |
-| `SEQGEN_PORT` | `3000` | Внешний порт, если второй аргумент не указан |
-| `SEQGEN_BIND_ADDRESS` | `0.0.0.0` | Адрес привязки порта |
-| `SEQGEN_CONTAINER_NAME` | `seqgen` | Имя контейнера |
-| `GHCR_USERNAME` | `vanyakrotov` | Пользователь GHCR |
-| `GHCR_TOKEN` | не задан | Токен для скачивания приватного образа |
-
-Чтобы открыть сервис только для локального reverse proxy:
-
-```bash
-sudo env SEQGEN_BIND_ADDRESS=127.0.0.1 \
-  bash scripts/deploy.sh v1.0.0
-```
+Скрипт скачает актуальный образ `latest`, заменит существующий контейнер и
+дождётся успешного health check. Адрес и порт потребуется подтвердить заново.
 
 Для приватного GHCR-пакета создайте GitHub Personal Access Token с правом
 `read:packages` и передайте его скрипту:
 
 ```bash
 sudo env \
-  GHCR_USERNAME=YOUR_GITHUB_USERNAME \
   GHCR_TOKEN=YOUR_GITHUB_TOKEN \
-  bash scripts/deploy.sh v1.0.0
+  bash scripts/deploy.sh
 ```
 
 Не добавляйте токен в репозиторий или текст самого скрипта.

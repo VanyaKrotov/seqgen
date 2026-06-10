@@ -2,11 +2,11 @@
 
 set -Eeuo pipefail
 
-IMAGE="${SEQGEN_IMAGE:-ghcr.io/vanyakrotov/seqgen}"
-TAG="${1:-latest}"
-HOST_PORT="${2:-${SEQGEN_PORT:-3000}}"
-CONTAINER_NAME="${SEQGEN_CONTAINER_NAME:-seqgen}"
-BIND_ADDRESS="${SEQGEN_BIND_ADDRESS:-0.0.0.0}"
+readonly IMAGE="ghcr.io/vanyakrotov/seqgen"
+readonly TAG="latest"
+readonly CONTAINER_NAME="seqgen"
+readonly DEFAULT_BIND_ADDRESS="0.0.0.0"
+readonly DEFAULT_HOST_PORT="3000"
 
 log() {
   printf '[seqgen] %s\n' "$1"
@@ -17,9 +17,74 @@ fail() {
   exit 1
 }
 
+print_summary() {
+  local public_address="${BIND_ADDRESS}"
+  local access_url
+  local green=""
+  local cyan=""
+  local bold=""
+  local reset=""
+
+  if [[ "${BIND_ADDRESS}" == "0.0.0.0" ]]; then
+    public_address="<server-ip>"
+  fi
+
+  access_url="http://${public_address}:${HOST_PORT}"
+
+  if [[ -t 1 ]]; then
+    green=$'\033[32m'
+    cyan=$'\033[36m'
+    bold=$'\033[1m'
+    reset=$'\033[0m'
+  fi
+
+  printf '\n'
+  printf '%s\n' "${green}+------------------------------------------------------------+${reset}"
+  printf '%s\n' "${green}|                  Seqgen is ready to use                    |${reset}"
+  printf '%s\n' "${green}+------------------------------------------------------------+${reset}"
+  printf '\n'
+  printf '  %s%-18s%s %s\n' "${bold}" "Status:" "${reset}" "${green}healthy${reset}"
+  printf '  %s%-18s%s %s\n' "${bold}" "Application URL:" "${reset}" "${cyan}${access_url}${reset}"
+  printf '  %s%-18s%s %s\n' "${bold}" "Bind address:" "${reset}" "${BIND_ADDRESS}"
+  printf '  %s%-18s%s %s\n' "${bold}" "External port:" "${reset}" "${HOST_PORT}"
+  printf '  %s%-18s%s %s\n' "${bold}" "Container:" "${reset}" "${CONTAINER_NAME}"
+  printf '  %s%-18s%s %s\n' "${bold}" "Docker image:" "${reset}" "${FULL_IMAGE}"
+  printf '  %s%-18s%s %s\n' "${bold}" "Restart policy:" "${reset}" "unless-stopped"
+  printf '\n'
+  printf '  %sUseful commands%s\n' "${bold}" "${reset}"
+  printf '  %-18s %s\n' "View status:" "sudo docker ps --filter name=${CONTAINER_NAME}"
+  printf '  %-18s %s\n' "Follow logs:" "sudo docker logs -f ${CONTAINER_NAME}"
+  printf '  %-18s %s\n' "Restart:" "sudo docker restart ${CONTAINER_NAME}"
+  printf '  %-18s %s\n' "Stop:" "sudo docker stop ${CONTAINER_NAME}"
+  printf '  %-18s %s\n' "Update:" "sudo bash scripts/deploy.sh"
+  printf '\n'
+
+  if [[ "${BIND_ADDRESS}" == "0.0.0.0" ]]; then
+    printf '  %sNote:%s Replace <server-ip> with the public IP address or domain name.\n' \
+      "${cyan}" "${reset}"
+    printf '\n'
+  fi
+}
+
 if [[ "${EUID}" -ne 0 ]]; then
-  fail "Run this script as root, for example: sudo bash scripts/deploy.sh ${TAG}"
+  fail "Run this script as root, for example: sudo bash scripts/deploy.sh"
 fi
+
+if (( $# > 0 )); then
+  fail "This script does not accept arguments."
+fi
+
+if [[ -t 0 ]]; then
+  read -r -p "Bind address [${DEFAULT_BIND_ADDRESS}]: " BIND_ADDRESS
+  read -r -p "External port [${DEFAULT_HOST_PORT}]: " HOST_PORT
+else
+  log "No interactive terminal detected, using default network settings"
+  BIND_ADDRESS=""
+  HOST_PORT=""
+fi
+
+BIND_ADDRESS="${BIND_ADDRESS:-${DEFAULT_BIND_ADDRESS}}"
+HOST_PORT="${HOST_PORT:-${DEFAULT_HOST_PORT}}"
 
 if [[ ! "${HOST_PORT}" =~ ^[0-9]+$ ]] || (( HOST_PORT < 1 || HOST_PORT > 65535 )); then
   fail "Port must be an integer between 1 and 65535."
@@ -71,7 +136,7 @@ systemctl enable --now docker
 if [[ -n "${GHCR_TOKEN:-}" ]]; then
   log "Authenticating with GitHub Container Registry"
   printf '%s' "${GHCR_TOKEN}" | docker login ghcr.io \
-    --username "${GHCR_USERNAME:-vanyakrotov}" \
+    --username "vanyakrotov" \
     --password-stdin
 fi
 
@@ -100,8 +165,7 @@ for _ in {1..30}; do
     "${CONTAINER_NAME}")"
 
   if [[ "${STATUS}" == "healthy" ]]; then
-    log "Deployment completed: http://${BIND_ADDRESS}:${HOST_PORT}"
-    docker ps --filter "name=^/${CONTAINER_NAME}$"
+    print_summary
     exit 0
   fi
 
