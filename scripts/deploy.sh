@@ -17,6 +17,12 @@ fail() {
   exit 1
 }
 
+docker_dependencies_installed() {
+  command -v docker >/dev/null 2>&1 \
+    && docker buildx version >/dev/null 2>&1 \
+    && docker compose version >/dev/null 2>&1
+}
+
 print_summary() {
   local public_address="${BIND_ADDRESS}"
   local access_url
@@ -103,35 +109,50 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-log "Installing system dependencies"
-apt-get update
-apt-get install -y --no-install-recommends ca-certificates curl
+if docker_dependencies_installed; then
+  log "Docker, Buildx, and Compose are already installed; skipping package installation"
+else
+  log "Installing Docker and required plugins"
+  apt-get update
+  apt-get install -y --no-install-recommends ca-certificates curl
 
-install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
-  -o /etc/apt/keyrings/docker.asc
-chmod a+r /etc/apt/keyrings/docker.asc
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+    -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
 
-ARCHITECTURE="$(dpkg --print-architecture)"
-UBUNTU_SUITE="${UBUNTU_CODENAME:-${VERSION_CODENAME}}"
-printf '%s\n' \
-  "Types: deb" \
-  "URIs: https://download.docker.com/linux/ubuntu" \
-  "Suites: ${UBUNTU_SUITE}" \
-  "Components: stable" \
-  "Architectures: ${ARCHITECTURE}" \
-  "Signed-By: /etc/apt/keyrings/docker.asc" \
-  > /etc/apt/sources.list.d/docker.sources
+  ARCHITECTURE="$(dpkg --print-architecture)"
+  UBUNTU_SUITE="${UBUNTU_CODENAME:-${VERSION_CODENAME}}"
+  printf '%s\n' \
+    "Types: deb" \
+    "URIs: https://download.docker.com/linux/ubuntu" \
+    "Suites: ${UBUNTU_SUITE}" \
+    "Components: stable" \
+    "Architectures: ${ARCHITECTURE}" \
+    "Signed-By: /etc/apt/keyrings/docker.asc" \
+    > /etc/apt/sources.list.d/docker.sources
 
-apt-get update
-apt-get install -y \
-  docker-ce \
-  docker-ce-cli \
-  containerd.io \
-  docker-buildx-plugin \
-  docker-compose-plugin
+  apt-get update
+  apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin
+fi
 
-systemctl enable --now docker
+if ! docker_dependencies_installed; then
+  fail "Docker or one of the required CLI plugins is unavailable after installation."
+fi
+
+if systemctl list-unit-files --type=service --no-legend \
+  | grep -q '^docker\.service'; then
+  systemctl enable --now docker
+fi
+
+if ! docker info >/dev/null 2>&1; then
+  fail "Docker is installed, but the Docker daemon is not available."
+fi
 
 if [[ -n "${GHCR_TOKEN:-}" ]]; then
   log "Authenticating with GitHub Container Registry"

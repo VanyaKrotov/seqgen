@@ -94,6 +94,8 @@ publish Docker image → Run workflow**. В поле `Image tag to publish` ук
 Скрипт `scripts/deploy.sh` поддерживает Ubuntu, устанавливает Docker Engine и
 необходимые плагины из официального репозитория Docker, скачивает образ и
 запускает контейнер с политикой перезапуска `unless-stopped`.
+Если Docker, Buildx и Docker Compose уже установлены, настройка APT и повторная
+установка пакетов пропускаются.
 
 Первое развёртывание из клонированного репозитория:
 
