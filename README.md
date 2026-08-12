@@ -119,7 +119,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/VanyaKrotov/seqgen/main/scri
 ```
 
 Скрипт не принимает аргументы. Он всегда использует образ
-`ghcr.io/vanyakrotov/seqgen:latest` и имя контейнера `seqgen`. Во время запуска
+`ghcr.io/vanyakrotov/seqgen:latest` и имя контейнера `seqgen`. При первом запуске
 скрипт запросит адрес привязки и внешний порт:
 
 ```text
@@ -139,8 +139,9 @@ External port [3000]:
 sudo bash scripts/deploy.sh
 ```
 
-Скрипт скачает актуальный образ `latest`, заменит существующий контейнер и
-дождётся успешного health check. Адрес и порт потребуется подтвердить заново.
+Скрипт скачает актуальный образ `latest`, найдёт существующий контейнер `seqgen`,
+сохранит его адрес привязки и внешний порт, заменит контейнер и дождётся
+успешного health check. При обновлении повторный ввод параметров не требуется.
 
 Для приватного GHCR-пакета создайте GitHub Personal Access Token с правом
 `read:packages` и передайте его скрипту:

@@ -23,6 +23,23 @@ docker_dependencies_installed() {
     && docker compose version >/dev/null 2>&1
 }
 
+read_existing_network_settings() {
+  local published_port
+
+  published_port="$(docker inspect --format '{{with index .HostConfig.PortBindings "3000/tcp"}}{{with index . 0}}{{.HostIp}}|{{.HostPort}}{{end}}{{end}}' "${CONTAINER_NAME}")"
+
+  if [[ -z "${published_port}" || "${published_port}" != *"|"* ]]; then
+    fail "Existing ${CONTAINER_NAME} container does not publish port 3000; unable to preserve its network settings."
+  fi
+
+  IFS='|' read -r BIND_ADDRESS HOST_PORT <<< "${published_port}"
+  BIND_ADDRESS="${BIND_ADDRESS:-${DEFAULT_BIND_ADDRESS}}"
+
+  if [[ ! "${HOST_PORT}" =~ ^[0-9]+$ ]] || (( HOST_PORT < 1 || HOST_PORT > 65535 )); then
+    fail "Existing ${CONTAINER_NAME} container has an invalid published port."
+  fi
+}
+
 print_summary() {
   local public_address="${BIND_ADDRESS}"
   local access_url
@@ -78,22 +95,6 @@ fi
 
 if (( $# > 0 )); then
   fail "This script does not accept arguments."
-fi
-
-if [[ -t 0 ]]; then
-  read -r -p "Bind address [${DEFAULT_BIND_ADDRESS}]: " BIND_ADDRESS
-  read -r -p "External port [${DEFAULT_HOST_PORT}]: " HOST_PORT
-else
-  log "No interactive terminal detected, using default network settings"
-  BIND_ADDRESS=""
-  HOST_PORT=""
-fi
-
-BIND_ADDRESS="${BIND_ADDRESS:-${DEFAULT_BIND_ADDRESS}}"
-HOST_PORT="${HOST_PORT:-${DEFAULT_HOST_PORT}}"
-
-if [[ ! "${HOST_PORT}" =~ ^[0-9]+$ ]] || (( HOST_PORT < 1 || HOST_PORT > 65535 )); then
-  fail "Port must be an integer between 1 and 65535."
 fi
 
 if [[ ! -r /etc/os-release ]]; then
@@ -154,6 +155,30 @@ if ! docker info >/dev/null 2>&1; then
   fail "Docker is installed, but the Docker daemon is not available."
 fi
 
+if docker container inspect "${CONTAINER_NAME}" >/dev/null 2>&1; then
+  log "Existing ${CONTAINER_NAME} container found; preserving its network settings"
+  read_existing_network_settings
+  CONTAINER_EXISTS=true
+else
+  CONTAINER_EXISTS=false
+
+  if [[ -t 0 ]]; then
+    read -r -p "Bind address [${DEFAULT_BIND_ADDRESS}]: " BIND_ADDRESS
+    read -r -p "External port [${DEFAULT_HOST_PORT}]: " HOST_PORT
+  else
+    log "No interactive terminal detected, using default network settings"
+    BIND_ADDRESS=""
+    HOST_PORT=""
+  fi
+
+  BIND_ADDRESS="${BIND_ADDRESS:-${DEFAULT_BIND_ADDRESS}}"
+  HOST_PORT="${HOST_PORT:-${DEFAULT_HOST_PORT}}"
+
+  if [[ ! "${HOST_PORT}" =~ ^[0-9]+$ ]] || (( HOST_PORT < 1 || HOST_PORT > 65535 )); then
+    fail "Port must be an integer between 1 and 65535."
+  fi
+fi
+
 if [[ -n "${GHCR_TOKEN:-}" ]]; then
   log "Authenticating with GitHub Container Registry"
   printf '%s' "${GHCR_TOKEN}" | docker login ghcr.io \
@@ -166,8 +191,8 @@ FULL_IMAGE="${IMAGE}:${TAG}"
 log "Pulling ${FULL_IMAGE}"
 docker pull "${FULL_IMAGE}"
 
-if docker container inspect "${CONTAINER_NAME}" >/dev/null 2>&1; then
-  log "Removing the previous ${CONTAINER_NAME} container"
+if [[ "${CONTAINER_EXISTS}" == true ]]; then
+  log "Replacing the existing ${CONTAINER_NAME} container"
   docker rm --force "${CONTAINER_NAME}" >/dev/null
 fi
 
