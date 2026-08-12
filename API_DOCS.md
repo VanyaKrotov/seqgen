@@ -8,13 +8,16 @@ Local development: `http://localhost:5173/api`
 
 ## Common request
 
-`POST /api/generate/{type}`
+`POST /api/generate/{type}` is the recommended request format. Send options as a JSON request body with `Content-Type: application/json`.
 
-Headers:
+`GET /api/generate/{type}` is also available when options must be passed in headers:
 
 ```http
-Content-Type: application/json
+X-Data: <Base64-encoded UTF-8 JSON>
+X-Language: en
 ```
+
+`X-Data` is standard Base64 for the UTF-8 bytes of the JSON object. `X-Language` controls error messages and supports `en`, `ru`, `de`, `fr`, and `es`; missing or unsupported values fall back to English. `X-Language` can also be supplied with POST requests.
 
 Common field:
 
@@ -38,11 +41,11 @@ Validation error (`400`):
 { "error": "Validation message" }
 ```
 
-Unknown type returns `404`. A `GET` request to a generation endpoint returns `405`.
+Unknown type returns `404`. Invalid or missing `X-Data`, invalid Base64, and invalid JSON return `400`. Unsupported methods return `405` with `Allow: GET, POST`.
 
 ## Password
 
-`POST /api/generate/password`
+`GET` or `POST /api/generate/password`
 
 | Field | Type | Default | Limits |
 | --- | --- | --- | --- |
@@ -55,14 +58,21 @@ Unknown type returns `404`. A `GET` request to a generation endpoint returns `40
 At least one character set must be selected. The result includes at least one character from each selected set.
 
 ```bash
+# POST (recommended)
 curl -X POST http://localhost:5173/api/generate/password \
   -H "Content-Type: application/json" \
+  -H "X-Language: en" \
   -d '{"length":32,"symbols":true,"quantity":2}'
+
+# GET: X-Data is Base64 for {"length":32,"symbols":true,"quantity":2}
+curl http://localhost:5173/api/generate/password \
+  -H "X-Data: eyJsZW5ndGgiOjMyLCJzeW1ib2xzIjp0cnVlLCJxdWFudGl0eSI6Mn0=" \
+  -H "X-Language: en"
 ```
 
 ## Random number
 
-`POST /api/generate/number`
+`GET` or `POST /api/generate/number`
 
 | Field | Type | Default | Limits |
 | --- | --- | --- | --- |
@@ -78,7 +88,7 @@ The inclusive range may span at most 10,000,000 values. Sampling is uniform; exc
 
 ## VPN secret
 
-`POST /api/generate/vpn`
+`GET` or `POST /api/generate/vpn`
 
 | Field | Type | Default | Values / limits |
 | --- | --- | --- | --- |
@@ -89,7 +99,7 @@ The inclusive range may span at most 10,000,000 values. Sampling is uniform; exc
 
 ## UUID / compact ID
 
-`POST /api/generate/uuid`
+`GET` or `POST /api/generate/uuid`
 
 | Field | Type | Default | Values / limits |
 | --- | --- | --- | --- |
@@ -100,7 +110,7 @@ The inclusive range may span at most 10,000,000 values. Sampling is uniform; exc
 
 ## Random phrase
 
-`POST /api/generate/phrase`
+`GET` or `POST /api/generate/phrase`
 
 | Field | Type | Default | Limits |
 | --- | --- | --- | --- |
@@ -111,7 +121,7 @@ Phrases are valid English BIP-39 mnemonics with a checksum and cryptographically
 
 ## Random byte sequence
 
-`POST /api/generate/seq`
+`GET` or `POST /api/generate/seq`
 
 | Field | Type | Default | Values / limits |
 | --- | --- | --- | --- |
@@ -120,7 +130,7 @@ Phrases are valid English BIP-39 mnemonics with a checksum and cryptographically
 
 ## Xray short ID
 
-`POST /api/generate/short-id`
+`GET` or `POST /api/generate/short-id`
 
 | Field | Type | Default | Limits |
 | --- | --- | --- | --- |

@@ -129,10 +129,18 @@ export function ApiDocsPage() {
         <p className="text-sm leading-6 text-[var(--muted)]">
           {t("apiDocs.requestHint")}
         </p>
+        <h3 className="mb-2 mt-7 text-sm">{t("apiDocs.postRequest")}</h3>
         <pre className="m-0 overflow-x-auto rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--bg)_86%,transparent)] p-4 font-mono text-xs leading-6">
           <code>{`curl -X POST /api/generate/password \\
   -H "Content-Type: application/json" \\
+  -H "X-Language: en" \\
   -d '{"length":32,"symbols":true}'`}</code>
+        </pre>
+        <h3 className="mb-2 mt-7 text-sm">{t("apiDocs.getRequest")}</h3>
+        <pre className="m-0 overflow-x-auto rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--bg)_86%,transparent)] p-4 font-mono text-xs leading-6">
+          <code>{`curl /api/generate/password \\
+  -H "X-Data: eyJsZW5ndGgiOjMyLCJzeW1ib2xzIjp0cnVlfQ==" \\
+  -H "X-Language: en"`}</code>
         </pre>
         <h3 className="mb-2 mt-7 text-sm">{t("apiDocs.response")}</h3>
         <pre className="m-0 overflow-x-auto rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--bg)_86%,transparent)] p-4 font-mono text-xs leading-6">
@@ -155,7 +163,7 @@ export function ApiDocsPage() {
                 {t(`generators.${endpoint.id}.name`)}
               </h2>
               <code className="rounded-lg bg-[color-mix(in_srgb,var(--accent)_10%,transparent)] px-3 py-2 text-xs text-[var(--accent)] max-[640px]:mt-3 max-[640px]:inline-block">
-                POST {endpoint.path}
+                GET · POST {endpoint.path}
               </code>
             </div>
             <div className="mt-5 grid grid-cols-[1fr_1.15fr] gap-6 max-[760px]:grid-cols-1">
